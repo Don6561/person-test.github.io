@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#FAF8F3">
+<title>你的性格，与历史哪位人物最相似</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ============ 屏 1：验证码入口 ============ -->
+  <section class="screen active" id="s-gate">
+    <div class="gate-wrap">
+      <div class="seal">测</div>
+      <h1 class="gate-title" id="gateTitle"></h1>
+      <p class="gate-sub">请输入你收到的测试验证码</p>
+
+      <div class="code-box" id="codeBox">
+        <input class="code-input" id="codeInput" type="text" maxlength="12"
+               autocomplete="off" autocorrect="off" autocapitalize="characters"
+               spellcheck="false" placeholder="······">
+        <div class="code-line"></div>
+      </div>
+      <div class="code-msg" id="codeMsg"></div>
+
+      <button class="btn btn-main" id="btnUnlock">验 证 并 开 始</button>
+
+      <div class="gate-tips">
+        <p>验证码在下单后自动发送给你的链接说明里</p>
+        <p class="dim">如遇问题请联系笔记作者补发</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 屏 2：封面 ============ -->
+  <section class="screen" id="s-intro">
+    <div class="intro-wrap">
+      <div class="intro-kicker">趣 味 心 理 投 射</div>
+      <h1 class="intro-title" id="introTitle"></h1>
+      <div class="intro-rule"></div>
+      <p class="intro-sub" id="introSub"></p>
+      <div class="intro-desc" id="introDesc"></div>
+      <div class="intro-meta">
+        <span>已有 <b id="pvNum">—</b> 人完成测试</span>
+      </div>
+      <button class="btn btn-main" id="btnStart">开 始 测 试</button>
+      <p class="intro-note">9 道题 · 全程约 40 秒</p>
+    </div>
+  </section>
+
+  <!-- ============ 屏 3：答题 ============ -->
+  <section class="screen" id="s-quiz">
+    <div class="quiz-top">
+      <div class="bar"><div class="bar-in" id="quizBar"></div></div>
+      <div class="quiz-meta">
+        <span class="q-num" id="qNum">01</span>
+        <span class="q-total">/ 9</span>
+        <span class="q-back" id="btnBack">上一题</span>
+      </div>
+    </div>
+    <div class="quiz-body">
+      <div class="q-tip" id="qTip">凭第一反应选择</div>
+      <h2 class="q-text" id="qText"></h2>
+      <div class="opts" id="opts"></div>
+    </div>
+  </section>
+
+  <!-- ============ 屏 4：计算中 ============ -->
+  <section class="screen" id="s-calc">
+    <div class="calc-wrap">
+      <div class="calc-ring">
+        <div class="calc-ring-in" id="calcNum">0</div>
+      </div>
+      <div class="calc-step" id="calcStep"></div>
+      <div class="calc-bar"><div class="calc-bar-in" id="calcBar"></div></div>
+      <div class="calc-tip">正在为你匹配，请稍候…</div>
+    </div>
+  </section>
+
+  <!-- ============ 屏 5：结果 ============ -->
+  <section class="screen" id="s-result">
+    <div class="result" id="result"></div>
+  </section>
+
+</div>
+
+<!-- 分享卡弹层 -->
+<div class="shot-mask" id="shotMask">
+  <div class="shot-inner">
+    <div class="shot-hd">长按下方图片保存到相册</div>
+    <div id="shotHolder"></div>
+    <button class="btn btn-ghost" id="btnCloseShot">关 闭</button>
+    <p class="shot-note">保存后可直接发朋友圈 / 小红书</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="code.js"></script>
+<script src="quiz-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
