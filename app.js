@@ -460,28 +460,32 @@ function makeCard(){
   y = wrap(c, r.intro[0], M, y, INNER, 42, 3);
   y += 34;
 
-  /* 隐藏面卡片：先量高度，再画框（框会盖住文字，故画完框重画文字） */
+  /* 隐藏面卡片：先量高度，再画框（框会盖住文字，故画完框重画文字）
+   * 注意：wrap() 返回的是「绝对 y 坐标」，不是相对高度。
+   * 以前误写成 boxH = t2 + 28，把绝对坐标当高度，导致卡片被撑到近千像素、
+   * 文字挤在顶部、下方一大片留白。正确做法是 (t2 - cardTop) + 28。 */
   const ml = r.maskedLabel.replace(/^别人眼里的你\s*[—\-]\s*/, '');
   const mr = r.maskedReal.replace(/^真实的你\s*[—\-]\s*/, '');
+  const cardTop = y;
   c.fillStyle = '#8A9A94'; c.font = F(17); c.textAlign = 'left';
-  c.fillText('表 面 · 别 人 眼 里', M + 28, y + 34);
+  c.fillText('表 面 · 别 人 眼 里', M + 28, cardTop + 34);
   c.fillStyle = INK; c.font = F(22);
-  const t1 = wrap(c, ml, M + 28, y + 64, INNER - 56, 30, 2);
+  const t1 = wrap(c, ml, M + 28, cardTop + 64, INNER - 56, 30, 2);
   c.fillStyle = '#8A9A94'; c.font = F(17);
   c.fillText('真 实 · 你 自 己', M + 28, t1 + 28);
   c.fillStyle = INK; c.font = F(22);
   const t2 = wrap(c, mr, M + 28, t1 + 58, INNER - 56, 30, 2);
-  const boxH = Math.max(150, t2 + 28);
-  c.fillStyle = '#F5F1E8'; roundRect(c, M, y, INNER, boxH, 12); c.fill();
+  const boxH = Math.max(150, (t2 - cardTop) + 28);
+  c.fillStyle = '#F5F1E8'; roundRect(c, M, cardTop, INNER, boxH, 12); c.fill();
   c.fillStyle = '#8A9A94'; c.font = F(17); c.textAlign = 'left';
-  c.fillText('表 面 · 别 人 眼 里', M + 28, y + 34);
+  c.fillText('表 面 · 别 人 眼 里', M + 28, cardTop + 34);
   c.fillStyle = INK; c.font = F(22);
-  wrap(c, ml, M + 28, y + 64, INNER - 56, 30, 2);
+  wrap(c, ml, M + 28, cardTop + 64, INNER - 56, 30, 2);
   c.fillStyle = '#8A9A94'; c.font = F(17);
   c.fillText('真 实 · 你 自 己', M + 28, t1 + 28);
   c.fillStyle = INK; c.font = F(22);
   wrap(c, mr, M + 28, t1 + 58, INNER - 56, 30, 2);
-  y += boxH + 40;
+  y = cardTop + boxH + 40;
 
   /* 年度关键词 */
   c.fillStyle = GOLD; c.font = F(18); spaced(c, '今 年 关 键 词', M, y, 6);
