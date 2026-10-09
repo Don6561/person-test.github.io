@@ -22,7 +22,8 @@ const CONFIG = {
   nextBtn: '立 即 开 始',
   nextInNewTab: true,                // true=新开标签页（结果页不会丢），false=当前页直接跳
 
-  shotTip: '搜索笔记作者 · 解锁更多测试'
+  shotTip: '搜索笔记作者「imfaaay」· 解锁更多测试',
+  shotAccount: 'imfaaay'
 };
 /* ---------------------------------- */
 
@@ -408,96 +409,123 @@ function copyText(t){
   document.body.removeChild(ta);
 }
 
-/* ===== Canvas 分享卡 ===== */
+/* ===== Canvas 分享卡 =====
+ * 布局原则：全程自上而下顺序排版，页脚锚定卡片底部。
+ * 旧版用固定底部坐标 qTop = H - 430 锚定金句区，导致上方变量长度内容
+ * 一旦超出就会与金句重叠（"错位"）。现改为顺序流动 + 末尾计算真实高度，
+ * 再用临时画布量好后裁切到最终高度，任何文案长度都不会重叠或留白过多。 */
 function makeCard(){
   const r = myResult;
-  const W = 750, H = 1334;
-  const cv = document.createElement('canvas');
-  cv.width = W; cv.height = H;
-  const c = cv.getContext('2d');
+  const W = 750, M = 76, INNER = W - 2 * M;
   const F = (s) => '400 ' + s + 'px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
   const INK = '#1F1D1A', INK2 = '#4A453F', INK3 = '#8A837A', SEAL = '#B23A2E', GOLD = '#B08D3F';
 
-  c.fillStyle = '#FAF8F3'; c.fillRect(0, 0, W, H);
-  c.strokeStyle = '#E4DFD4'; c.lineWidth = 2;
-  c.strokeRect(38, 38, W - 76, H - 76);
-  c.fillStyle = SEAL; c.fillRect(38, 38, W - 76, 5);
-
+  /* 临时画布：先把所有元素顺序画完，量出真实需要的高度 */
+  const tmp = document.createElement('canvas');
+  tmp.width = W; tmp.height = 2200;
+  const c = tmp.getContext('2d');
+  c.fillStyle = '#FAF8F3'; c.fillRect(0, 0, W, 2200);
   c.textBaseline = 'alphabetic';
 
-  c.fillStyle = SEAL;
-  roundRect(c, W - 132, 84, 62, 62, 8); c.fill();
+  /* 顶栏：印章 + 红条 */
+  c.fillStyle = SEAL; c.fillRect(38, 38, W - 76, 5);
+  c.fillStyle = SEAL; roundRect(c, W - 132, 84, 62, 62, 8); c.fill();
   c.fillStyle = '#fff'; c.font = F(32); c.textAlign = 'center'; c.textBaseline = 'middle';
   c.fillText('测', W - 101, 117);
   c.textBaseline = 'alphabetic'; c.textAlign = 'left';
 
-  c.fillStyle = GOLD; c.font = F(20);
-  spaced(c, '趣 味 心 理 投 射', 78, 122, 8);
-  c.fillStyle = INK3; c.font = F(22);
-  spaced(c, '你 的 灵 魂 原 型', 78, 176, 7);
+  c.fillStyle = GOLD; c.font = F(20); spaced(c, '趣 味 心 理 投 射', M, 122, 8);
+  c.fillStyle = INK3; c.font = F(22); spaced(c, '你 的 灵 魂 原 型', M, 176, 7);
 
+  /* 姓名（末字朱砂） */
   const nm = r.name;
-  c.font = F(94);
-  c.fillStyle = INK;
+  c.font = F(94); c.fillStyle = INK;
   const head = nm.slice(0, -1);
-  c.fillText(head, 76, 300);
+  c.fillText(head, M, 300);
   const hw = c.measureText(head).width;
-  c.fillStyle = SEAL;
-  c.fillText(nm.slice(-1), 76 + hw, 300);
+  c.fillStyle = SEAL; c.fillText(nm.slice(-1), M + hw, 300);
 
-  c.fillStyle = INK2; c.font = F(30);
-  c.fillText(r.tag, 76, 356);
+  /* 标签 + 数据 */
+  c.fillStyle = INK2; c.font = F(30); c.fillText(r.tag, M, 356);
+  c.fillStyle = SEAL; c.font = F(46); c.fillText(r._sim + '%', M, 434);
+  c.fillStyle = INK3; c.font = F(19); c.fillText('相似度', M, 466);
+  c.fillStyle = SEAL; c.font = F(46); c.fillText(r.rarity, 266, 434);
+  c.fillStyle = INK3; c.font = F(19); c.fillText('稀缺度', 266, 466);
 
-  c.fillStyle = SEAL; c.font = F(46);
-  c.fillText(r._sim + '%', 76, 434);
-  c.fillStyle = INK3; c.font = F(19);
-  c.fillText('相似度', 76, 466);
-
-  c.fillStyle = SEAL; c.font = F(46);
-  c.fillText(r.rarity, 266, 434);
-  c.fillStyle = INK3; c.font = F(19);
-  c.fillText('稀缺度', 266, 466);
-
-  c.strokeStyle = '#E4DFD4'; c.lineWidth = 1;
-  line(c, 76, 514, W - 76, 514);
-
+  /* 分隔 + 人格解读首段 */
+  let y = 514;
+  c.strokeStyle = '#E4DFD4'; c.lineWidth = 1; line(c, M, y, W - M, y);
+  y += 52;
   c.fillStyle = INK2; c.font = F(25);
-  let y = wrap(c, r.intro[0], 76, 566, W - 152, 42, 3);
+  y = wrap(c, r.intro[0], M, y, INNER, 42, 3);
+  y += 34;
 
-  y += 30;
-  c.fillStyle = '#F5F1E8';
-  roundRect(c, 76, y, W - 152, 150, 12); c.fill();
-  c.fillStyle = '#8A9A94'; c.font = F(18); c.textAlign = 'left';
-  c.fillText('别人眼里 / 真实的你', 102, y + 38);
-  c.fillStyle = INK; c.font = F(23);
-  const yy = wrap(c, r.maskedReal.replace('真实的你 — ', ''), 102, y + 80, W - 204, 38, 2);
-  y = Math.max(y + 150, yy + 20);
+  /* 隐藏面卡片：先量高度，再画框（框会盖住文字，故画完框重画文字） */
+  const ml = r.maskedLabel.replace(/^别人眼里的你\s*[—\-]\s*/, '');
+  const mr = r.maskedReal.replace(/^真实的你\s*[—\-]\s*/, '');
+  c.fillStyle = '#8A9A94'; c.font = F(17); c.textAlign = 'left';
+  c.fillText('表 面 · 别 人 眼 里', M + 28, y + 34);
+  c.fillStyle = INK; c.font = F(22);
+  const t1 = wrap(c, ml, M + 28, y + 64, INNER - 56, 30, 2);
+  c.fillStyle = '#8A9A94'; c.font = F(17);
+  c.fillText('真 实 · 你 自 己', M + 28, t1 + 28);
+  c.fillStyle = INK; c.font = F(22);
+  const t2 = wrap(c, mr, M + 28, t1 + 58, INNER - 56, 30, 2);
+  const boxH = Math.max(150, t2 + 28);
+  c.fillStyle = '#F5F1E8'; roundRect(c, M, y, INNER, boxH, 12); c.fill();
+  c.fillStyle = '#8A9A94'; c.font = F(17); c.textAlign = 'left';
+  c.fillText('表 面 · 别 人 眼 里', M + 28, y + 34);
+  c.fillStyle = INK; c.font = F(22);
+  wrap(c, ml, M + 28, y + 64, INNER - 56, 30, 2);
+  c.fillStyle = '#8A9A94'; c.font = F(17);
+  c.fillText('真 实 · 你 自 己', M + 28, t1 + 28);
+  c.fillStyle = INK; c.font = F(22);
+  wrap(c, mr, M + 28, t1 + 58, INNER - 56, 30, 2);
+  y += boxH + 40;
 
-  y += 48;
-  c.fillStyle = GOLD; c.font = F(18);
-  spaced(c, '今 年 关 键 词', 76, y, 6);
+  /* 年度关键词 */
+  c.fillStyle = GOLD; c.font = F(18); spaced(c, '今 年 关 键 词', M, y, 6);
   y += 64;
-  c.fillStyle = INK; c.font = F(58);
-  spaced(c, r.keyword, 76, y, 16);
-
+  c.fillStyle = INK; c.font = F(58); spaced(c, r.keyword, M, y, 16);
   y += 72;
+
+  /* 专属签名 */
   c.fillStyle = INK2; c.font = F(24);
-  y = wrap(c, r.signature, 76, y, W - 152, 40, 3);
+  y = wrap(c, r.signature, M, y, INNER, 40, 3);
+  y += 40;
 
-  const qTop = H - 430;
-  c.strokeStyle = '#E4DFD4'; c.lineWidth = 1;
-  line(c, 76, qTop, W - 76, qTop);
+  /* 分隔 + 金句 */
+  c.strokeStyle = '#E4DFD4'; line(c, M, y, W - M, y); y += 54;
   c.fillStyle = SEAL; c.font = F(30); c.textAlign = 'center';
-  c.fillText('「', W / 2, qTop + 60);
+  c.fillText('「', W / 2, y);
   c.fillStyle = INK; c.font = F(34);
-  wrap(c, r.quote, W / 2, qTop + 116, W - 190, 52, 4, 'center');
+  const qEnd = wrap(c, r.quote, W / 2, y + 56, INNER + 40, 52, 4, 'center');
   c.fillStyle = SEAL; c.font = F(30);
-  c.fillText('」', W / 2, qTop + 352);
+  c.fillText('」', W / 2, qEnd + 8);
+  y = qEnd + 56;
+  c.textAlign = 'left';
 
-  c.fillStyle = INK3; c.font = F(20); c.textAlign = 'center';
-  c.fillText(CONFIG.shotTip, W / 2, H - 86);
-  c.font = F(16);
-  c.fillText(QUIZ.disclaimer, W / 2, H - 54);
+  /* 页脚：搜索笔记作者（账号名朱砂高亮） */
+  const acct = CONFIG.shotAccount || 'imfaaay';
+  const seg1 = '搜索笔记作者 ', seg2 = ' · 解锁更多测试';
+  c.font = F(20);
+  const w1 = c.measureText(seg1).width, w2 = c.measureText(acct).width, w3 = c.measureText(seg2).width;
+  let fx = (W - (w1 + w2 + w3)) / 2;
+  c.fillStyle = INK3; c.textAlign = 'left'; c.fillText(seg1, fx, y); fx += w1;
+  c.fillStyle = SEAL; c.fillText(acct, fx, y); fx += w2;
+  c.fillStyle = INK3; c.fillText(seg2, fx, y);
+  c.font = F(15); c.fillStyle = INK3; c.textAlign = 'center';
+  c.fillText(QUIZ.disclaimer, W / 2, y + 34);
+  c.textAlign = 'left';
+
+  /* 裁切到真实高度，补外框 */
+  const H = y + 80;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const cc = cv.getContext('2d');
+  cc.fillStyle = '#FAF8F3'; cc.fillRect(0, 0, W, H);
+  cc.drawImage(tmp, 0, 0);
+  cc.strokeStyle = '#E4DFD4'; cc.lineWidth = 2; cc.strokeRect(38, 38, W - 76, H - 76);
 
   const holder = $('shotHolder');
   holder.innerHTML = '';
