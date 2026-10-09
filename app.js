@@ -518,8 +518,8 @@ function makeCard(){
   c.fillStyle = INK3; c.textAlign = 'left'; c.fillText(seg1, fx, y); fx += w1;
   c.fillStyle = SEAL; c.fillText(acct, fx, y); fx += w2;
   c.fillStyle = INK3; c.fillText(seg2, fx, y);
-  c.font = F(15); c.fillStyle = INK3; c.textAlign = 'center';
-  c.fillText(QUIZ.disclaimer, W / 2, y + 34);
+  c.font = F(13); c.fillStyle = INK3; c.textAlign = 'center';
+  c.fillText(QUIZ.disclaimer, W / 2, y + 32);
   c.textAlign = 'left';
 
   /* 裁切到真实高度，补外框 */
