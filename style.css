@@ -279,6 +279,14 @@ body{
 .shot-hd{color:#EFEAE0;font-size:13.5px;letter-spacing:.06em;margin-bottom:16px}
 #shotHolder img{width:100%;border-radius:10px;display:block}
 .shot-note{color:#A79F94;font-size:12px;margin-top:14px}
+/* 关闭按钮在深色弹层里需浅色，否则深色字看不清（像透明）；并与卡片拉开间距 */
+#btnCloseShot{
+  margin-top:18px;width:100%;
+  background:transparent;color:#EFEAE0;
+  border:1px solid rgba(239,234,224,.42);
+  letter-spacing:.3em;
+}
+#btnCloseShot:active{background:rgba(239,234,224,.12)}
 
 .toast{
   position:fixed;left:50%;bottom:60px;transform:translateX(-50%) translateY(14px);
