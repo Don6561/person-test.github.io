@@ -518,8 +518,13 @@ function makeCard(){
   c.fillStyle = INK3; c.textAlign = 'left'; c.fillText(seg1, fx, y); fx += w1;
   c.fillStyle = SEAL; c.fillText(acct, fx, y); fx += w2;
   c.fillStyle = INK3; c.fillText(seg2, fx, y);
-  c.font = F(13); c.fillStyle = INK3; c.textAlign = 'center';
-  c.fillText(QUIZ.disclaimer, W / 2, y + 32);
+  /* 免责声明：小字单行，过长自动收缩；去掉末尾句号更干净 */
+  let dTxt = QUIZ.disclaimer.replace(/[。.]\s*$/, '');
+  let dSize = 11;
+  c.font = F(dSize);
+  while (c.measureText(dTxt).width > INNER && dSize > 8) { dSize--; c.font = F(dSize); }
+  c.fillStyle = INK3; c.textAlign = 'center';
+  c.fillText(dTxt, W / 2, y + 30);
   c.textAlign = 'left';
 
   /* 裁切到真实高度，补外框 */
