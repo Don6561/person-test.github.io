@@ -16,9 +16,9 @@ const CONFIG = {
    *
    * 链接怎么拿：小红书 App 进你的店铺页 → 右上角分享 → 复制链接
    * 填进去之后完整保留引号，例：nextLink: 'https://www.xiaohongshu.com/...' */
-  nextTitle: '更 多 人 格 测 试',
-  nextDesc: '点击进入店铺 · 持续上新中',
-  nextLink: '',
+  nextTitle: '甄 嬛 传 ・ 后 宫 人 格',
+  nextDesc: '测你是剧中哪位小主 · 口令 1008',
+  nextLink: 'https://don6561.github.io/person-test.github.io/zhenhuan/',
   nextBtn: '立 即 开 始',
   nextInNewTab: true,                // true=新开标签页（结果页不会丢），false=当前页直接跳
 
